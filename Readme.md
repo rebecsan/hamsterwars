@@ -40,6 +40,7 @@ funktionalitet
 
 ## Inlämning
 - Ditt projekt ska inkomma senast **tors 14/5 kl 16**.
+- Forka [detta repo](https://github.com/johankivi/hamsterwars).
 - Du lämnar in en github-repo-länk i en *textfil* via ITHSdistans.se ( ironic framework ).
 
 
