@@ -8,8 +8,7 @@ app.use(express.static('public'));
 app.use(express.json());
 
 // ROUTES
-const assetsRoute = require('./routes/assets')
-app.use('/assets', assetsRoute);
+app.use('/assets', express.static('hamsters'));
 
 const chartsRoute = require('./routes/charts')
 app.use('/charts', chartsRoute);

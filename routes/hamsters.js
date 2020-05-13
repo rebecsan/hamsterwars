@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 
 })
 
-// /hamsters/:id Return hamsterobject with requested ID (GET)
+// /hamsters/:id Return hamsterobject with requested ID or random (GET)
 router.get('/:id', async (req, res) => {
 
     if(req.params.id !== 'random'){
@@ -59,7 +59,7 @@ router.get('/:id', async (req, res) => {
         }
         
     } else {
-        
+
         // /hamsters/random Returns a random hamsterobject
         try {
 
@@ -88,8 +88,8 @@ router.get('/:id', async (req, res) => {
         }
 
     }
-})
 
+})
 
 // /hamsters/:id/result Updates wins/defeats and games with +1 on requested hamsterobject (PUT)
 router.put('/:id/result', async (req, res) => {
@@ -105,37 +105,37 @@ router.put('/:id/result', async (req, res) => {
         // Loop through results
         snapshot.forEach(doc => {
 
-            // Check that no more than one game, win or defeat can be added in one request
-            if (req.body.wins !== 1 || req.body.defeats !== 1 && req.body.games !== 1) {
+            // Check that only values 0 or 1 are passed in the request body
+            if (req.body.wins !== (1 || 0) && req.body.defeats !== (1 || 0) && req.body.games !== 1) {
 
-                res.send({msg: 'Values can only be 1 or null'})
+                res.status(500).send({msg: 'Values can only be 1 or 0. Games must be 1.'})
 
             } else {
-                
-                // Store firebase-object as json in variable
-                let hamster = doc.data()
-                
-                if(req.body.wins) {
 
+                // Check that the passed values are not equal
+                if(req.body.wins !== req.body.defeats) {
+
+                    // Store firebase-object as json in variable
+                    let hamster = doc.data()
+                    
                     hamster.wins += req.body.wins * 1;
-
-                }
-
-                if(req.body.defeats) {
-
                     hamster.defeats += req.body.defeats * 1;
+                    hamster.games += req.body.games * 1;
+                    
+                    // Update database with new values
+                    db
+                    .collection('hamsters')
+                    .doc(doc.id)
+                    .update(hamster)
+                    .then(res.send({msg: `Updated hamster ${req.params.id}`}))
+                    .catch(err => { throw err })
+
+                } else {
+
+                    res.status(500).send({msg: 'Values cannot be equal'})
 
                 }
 
-                hamster.games += req.body.games * 1;
-                
-                // Update database with new values
-                db
-                .collection('hamsters')
-                .doc(doc.id)
-                .update(hamster)
-                .then(res.send({msg: `Updated hamster ${req.params.id}`}))
-                .catch(err => { throw err })
             }
 
         })  
