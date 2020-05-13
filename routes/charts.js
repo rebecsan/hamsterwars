@@ -42,7 +42,9 @@ router.get('/bottom', async (req, res) => {
         // Get all hamsters from firebase
         let snapshot = await db
         .collection('hamsters')
+        // Order by most defeated
         .orderBy('defeats', 'desc')
+        // Get only the top 5
         .limit(5)
         .get();
 
