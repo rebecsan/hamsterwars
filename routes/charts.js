@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { auth, db } = require('./../firebase');
+const { db } = require('./../firebase');
 
 const router = new Router();
 
@@ -42,7 +42,9 @@ router.get('/bottom', async (req, res) => {
         // Get all hamsters from firebase
         let snapshot = await db
         .collection('hamsters')
+        // Order by most defeated
         .orderBy('defeats', 'desc')
+        // Get only the top 5
         .limit(5)
         .get();
 
