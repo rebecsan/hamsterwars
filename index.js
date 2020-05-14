@@ -1,3 +1,6 @@
+// Init and use dotenv
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 
@@ -6,6 +9,10 @@ app.use(express.static('public'));
 
 // All post.body  > json
 app.use(express.json());
+
+// Auth middleware
+const auth = require('./auth')
+app.use(auth);
 
 // ROUTES
 app.use('/assets', express.static('hamsters'));
@@ -21,7 +28,6 @@ app.use('/hamsters', hamstersRoute);
 
 const statsRoute = require('./routes/stats')
 app.use('/stats', statsRoute);
-
 
 // Run server on port 3000
 app.listen(3000, () => {

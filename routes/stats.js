@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { auth, db } = require('./../firebase');
+const { db } = require('./../firebase');
 
 const router = new Router();
 
@@ -19,7 +19,7 @@ router.get('/total', async (req, res) => {
             games.push(game.data())
         })
 
-        res.send(`${games.length} rundor har spelats`);
+        res.send(`${games.length} games have been played`);
         
     } 
     catch (err) {
@@ -27,14 +27,6 @@ router.get('/total', async (req, res) => {
         res.status(500).send(err);
         
     }
-
 })
-
-// /stats/{opt} GET Känner er fria att sammanställa annan spännande statistik, ex. hur många % gillar majs? Vad är medelåldern på samtliga hamstrar, etc.
-
-/* {
-    totalGames: Number
-    ... // custom stats
-} */
 
 module.exports = router;
