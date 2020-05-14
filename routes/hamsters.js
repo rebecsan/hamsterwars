@@ -76,7 +76,7 @@ router.get('/:id([0-9]+)' /* Reg.exp. checks that id is numeric */, async (req, 
 
             if (hamster === undefined) {
                 
-                res.status(500).send({ msg: 'Id does not exist'});
+                res.status(400).send({ msg: 'Id does not exist'});
 
             } else {
 
@@ -105,7 +105,7 @@ router.put('/:id([0-9]+)/result', async (req, res) => {
         // Check if an object was found
         if (snapshot.size === 0) {
                 
-            res.status(500).send({ msg: 'Id does not exist'});
+            res.status(400).send({ msg: 'Id does not exist'});
         
         } else {
 
@@ -115,7 +115,7 @@ router.put('/:id([0-9]+)/result', async (req, res) => {
                 // Check that only values 0 or 1 are passed in the request body
                 if (req.body.wins !== (1 || 0) && req.body.defeats !== (1 || 0)) {
                     
-                    res.status(500).send({msg: 'Values can only be 1 or 0.'})
+                    res.status(400).send({msg: 'Values can only be 1 or 0.'})
                     
                 } else {
                     
@@ -136,12 +136,13 @@ router.put('/:id([0-9]+)/result', async (req, res) => {
                         .collection('hamsters')
                         .doc(doc.id)
                         .update(hamster)
-                        .then(res.send({msg: `Updated hamster ${req.params.id}`}))
                         .catch(err => { throw err })
+                        
+                        res.status(201).send({msg: `Updated hamster ${req.params.id}`})
                         
                     } else {
                         
-                        res.status(500).send({msg: 'Values cannot be equal'})
+                        res.status(400).send({msg: 'Values cannot be equal'})
                         
                     }
                 }
@@ -156,49 +157,3 @@ router.put('/:id([0-9]+)/result', async (req, res) => {
 })
 
 module.exports = router;
-
-
-
-// // Loop through results
-// snapshot.forEach(doc => {
-
-//     // Check that values in the request body are 0 or 1 and not equal
-//     if (req.body.wins + req.body.defeats !== 1) {
-
-//         res.status(500).send({msg: 'Values can only be 1 or 0 and must not be equal.'})
-
-//     } else {
-
-//         // Check that the passed values are not equal
-//         // if(req.body.wins !== req.body.defeats) {
-
-//             // Store firebase-object as json in variable
-//             let hamster = doc.data();
-//             let wins = req.body.wins;
-//             let defeats = req.body.defeats;
-
-//             hamster.wins = wins ? wins : 0;
-//             hamster.defeats = defeats ? defeats : 0;
-
-            
-//             // if(req.body.wins || req.body.defeats == null)
-//             // hamster.wins += parseInt(req.body.wins);
-//             // hamster.defeats += parseInt(req.body.defeats);
-//             hamster.games += 1;
-            
-//             // Update database with new values
-//             db
-//             .collection('hamsters')
-//             .doc(doc.id)
-//             .update(hamster)
-//             .then(res.send({msg: `Updated hamster ${req.params.id}`}))
-//             .catch(err => { throw err })
-
-//         // } else {
-
-//         //     res.status(500).send({msg: 'Values cannot be equal'})
-
-//         // }
-//     }
-// })
-// }
