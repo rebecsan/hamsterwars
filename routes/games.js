@@ -3,7 +3,7 @@ const { db } = require('./../firebase');
 const admin = require("firebase-admin");
 
 
-const router = new Router();
+const router = Router();
 
 // /games Return array with all previous game-objects (GET)
 router.get('/', async (req, res) => {

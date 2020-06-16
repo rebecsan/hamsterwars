@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { db } = require('./../firebase');
 
-const router = new Router();
+const router = Router();
 
 // /hamsters Return array with all hamsterobjects (GET)
 router.get('/', async (req, res) => {
@@ -31,30 +31,37 @@ router.get('/', async (req, res) => {
 
 // /hamsters/random Return random hamsterobject (GET)
 router.get('/random', async (req, res) => {
-
-        try {
-
-            let hamster;
-            let randId = Math.floor(Math.random() * 40) + 1;
-            
-            // Get all hamsters with the matching id from firebase
-            let snapshot = await db
+    
+    let dbLength = 0;
+    await db
             .collection('hamsters')
-            .where('id', '==', randId)
-            .get();
-            
-            snapshot.forEach(doc => {
-                hamster = doc.data()
-            })
+            .get()
+            .then(snapshot => {
+                dbLength = snapshot.size;
+            });
     
-            res.send(hamster);
-            
-        } 
-        catch (err) {
-    
-            res.status(500).send(err);
-            
-        }
+    try {
+        let hamster;
+        let randId = Math.floor(Math.random() * dbLength + 1);
+        
+        // Get all hamsters with the matching id from firebase
+        let snapshot = await db
+                            .collection('hamsters')
+                            .where('id', '==', randId)
+                            .get();
+        
+        snapshot.forEach(doc => {
+            hamster = doc.data()
+        })
+
+        res.send(hamster);
+        
+    } 
+    catch (err) {
+
+        res.status(500).send(err);
+        
+    }
 })
 
 // /hamsters/:id Return hamsterobject with requested ID (GET)
@@ -67,7 +74,7 @@ router.get('/:id([0-9]+)' /* Reg.exp. checks that id is numeric */, async (req, 
             // Get all hamsters with the matching id from firebase
             let snapshot = await db
             .collection('hamsters')
-            .where('id', '==', (req.params.id)*1)
+            .where('id', '==', parseInt(req.params.id))
             .get();
             
             snapshot.forEach(doc => {
@@ -99,7 +106,7 @@ router.put('/:id([0-9]+)/result', async (req, res) => {
         // Get all hamsters with the matching id from firebase
         let snapshot = await db
         .collection('hamsters')
-        .where('id', '==', (req.params.id)*1)
+        .where('id', '==', parseInt(req.params.id))
         .get()
 
         // Check if an object was found

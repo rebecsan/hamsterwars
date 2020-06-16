@@ -29,6 +29,9 @@ app.use('/hamsters', hamstersRoute);
 const statsRoute = require('./routes/stats')
 app.use('/stats', statsRoute);
 
+const uploadRoute = require('./routes/upload')
+app.use('/upload', uploadRoute);
+
 // Run server on port 3000
 app.listen(3000, () => {
     console.log('Server running on port 3000');
